@@ -12,7 +12,7 @@ import { useUserSearch } from "../queries";
 import { useRouter } from "next/navigation";
 
 export default function SearchResultScreen() {
-  const searchQuery = useSearchQuery();
+  const { searchQuery } = useSearchQuery();
   const query = useUserSearch({ query: searchQuery });
   const router = useRouter();
 

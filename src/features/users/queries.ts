@@ -4,13 +4,17 @@ import { BaseUser } from "../auth/types";
 import { UsersKeys } from "./keys";
 import { useAuthClient, useCurrentUser } from "../auth/hooks";
 
-export function useSchoolUsers() {
-  const client = useAuthClient();
+/**
+ *
+ * @param params : params to be passed with the request
+ * @returns
+ */
+export function useSchoolUsers(params: any) {
   const user = useCurrentUser();
 
   return useQuery({
-    queryKey: UsersKeys.withSchool(user.school),
-    queryFn: async () => getUsersInSchool(client, user.school),
+    queryKey: [...UsersKeys.withSchool(user.school), params],
+    queryFn: async () => getUsersInSchool(user.school, params),
   });
 }
 

@@ -1,6 +1,5 @@
 "use client";
-import { Box, Stack, Typography, Container } from "@mui/material";
-import Link from "next/link";
+import { Box, Stack, Typography } from "@mui/material";
 import UsersList from "../components/StudentsList";
 import AddUserDialog from "../components/AddNewUserDialog";
 

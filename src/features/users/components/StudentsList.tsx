@@ -1,9 +1,11 @@
 "use client";
 import * as React from "react";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { Chip } from "@mui/material";
+import { Chip, Paper, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { useSchoolUsers } from "../queries";
+import SearchFieldNav from "@/features/search/components/SearchFieldNav";
+import { useSearchQuery } from "@/features/search/hooks";
 
 const columns: GridColDef[] = [
   {
@@ -15,7 +17,9 @@ const columns: GridColDef[] = [
       const userId = props.row["id"];
       return (
         <Link
-          style={{ color: "lightskyblue", textDecoration: "underline" }}
+          style={{
+            color: "lightblue",
+          }}
           href={`/dashboard/users/${userId}`}
         >
           {props.value}
@@ -48,49 +52,57 @@ const columns: GridColDef[] = [
 ];
 
 export default function UsersList() {
-  const query = useSchoolUsers();
+  const { searchQuery } = useSearchQuery();
+
+  const query = useSchoolUsers({
+    search: searchQuery,
+  });
 
   return (
-    <DataGrid
-      checkboxSelection
-      rows={query.data ?? []}
-      disableRowSelectionOnClick
-      columns={columns}
-      loading={query.isPending}
-      getRowClassName={(params) =>
-        params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
-      }
-      initialState={{
-        pagination: { paginationModel: { pageSize: 10 } },
-      }}
-      pageSizeOptions={[10, 20, 50]}
-      density="standard"
-      slotProps={{
-        filterPanel: {
-          filterFormProps: {
-            logicOperatorInputProps: {
-              variant: "outlined",
-              size: "small",
-            },
-            columnInputProps: {
-              variant: "outlined",
-              size: "small",
-              sx: { mt: "auto" },
-            },
-            operatorInputProps: {
-              variant: "outlined",
-              size: "small",
-              sx: { mt: "auto" },
-            },
-            valueInputProps: {
-              InputComponentProps: {
+    <>
+      <Paper sx={{ mt: 2, mb: 2, p: 2 }} variant="outlined">
+        <SearchFieldNav />
+      </Paper>
+      <DataGrid
+        rows={query.data ?? []}
+        disableRowSelectionOnClick
+        columns={columns}
+        loading={query.isPending}
+        getRowClassName={(params) =>
+          params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+        }
+        initialState={{
+          pagination: { paginationModel: { pageSize: 10 } },
+        }}
+        pageSizeOptions={[10, 20, 50]}
+        density="standard"
+        slotProps={{
+          filterPanel: {
+            filterFormProps: {
+              logicOperatorInputProps: {
                 variant: "outlined",
                 size: "small",
               },
+              columnInputProps: {
+                variant: "outlined",
+                size: "small",
+                sx: { mt: "auto" },
+              },
+              operatorInputProps: {
+                variant: "outlined",
+                size: "small",
+                sx: { mt: "auto" },
+              },
+              valueInputProps: {
+                InputComponentProps: {
+                  variant: "outlined",
+                  size: "small",
+                },
+              },
             },
           },
-        },
-      }}
-    />
+        }}
+      />
+    </>
   );
 }

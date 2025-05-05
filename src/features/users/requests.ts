@@ -4,18 +4,20 @@ import { DetailedUser, Student, StudentMoreType } from "./types";
 import { User } from "./types";
 import { AddNewUserFormType, UpdateUserFormType, UserTypeEnum } from "./schema";
 import { Client } from "@/lib/network";
+import { PagePaginatedResponse } from "@/lib/types";
 
 /**
  * Server API endpoints (ep)
  */
 const ep = {
   schools: {
-    users: (schoolId: BaseUser["school"]) => {
-      return `/schools/${schoolId}/users/`;
+    users: () => {
+      return `/users/`;
     },
   },
 
   users: {
+    all: `/users/`,
     detail: (userId: BaseUser["id"]) => {
       return `/users/${userId}/`;
     },
@@ -23,11 +25,20 @@ const ep = {
 };
 
 export async function getUsersInSchool(
-  client: AxiosInstance,
-  schoolId: BaseUser["school"]
+  schoolId: BaseUser["school"],
+  params?: any
 ) {
-  const res = await client.get(ep.schools.users(schoolId));
-  return res.data;
+  const client = await Client();
+
+  const res = await client.request<PagePaginatedResponse<User>>({
+    method: "GET",
+    url: ep.users.all,
+    params: {
+      school: schoolId,
+      ...params,
+    },
+  });
+  return res.data.results;
 }
 
 /**
