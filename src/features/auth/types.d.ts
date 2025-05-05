@@ -3,8 +3,6 @@ export interface LoginCredentials {
   password: string;
 }
 
-export type UserTypes = "STUDENT" | "TEACHER" | "ADMIN" | "SYSTEM";
-
 /**
  * Base user fields
  */
@@ -19,7 +17,6 @@ export interface BaseUser {
   family_name: string;
   full_name: string;
   short_name: string;
-  type: string;
   school: number;
   gender: "M" | "F";
   date_joined: Date;

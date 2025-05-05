@@ -14,7 +14,12 @@ export function useSchoolUsers() {
   });
 }
 
-export function useUserDetails(userId: BaseUser["id"]) {
+export function useUserDetailsQuery(userId: BaseUser["id"]) {
+  console.log({
+    func_name: "useUserDetailsQuery",
+    userId: userId,
+    userIdType: typeof userId,
+  });
   const client = useAuthClient();
   const user = useCurrentUser();
   return useQuery({

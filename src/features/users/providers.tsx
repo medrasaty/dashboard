@@ -1,51 +1,68 @@
 "use client";
+import { type ReactNode, createContext, useContext } from "react";
+import type React from "react";
+import UserDetailScreenSkeleton from "./screens/UserDetailSkeleton";
+import { useUserDetailsQuery } from "./queries";
 
-import { type ReactNode, createContext, useRef, useContext } from "react";
+import { DetailedUser } from "./types";
+import { notFound } from "next/navigation";
+import { BaseUser } from "../auth/types";
 
-import { useStore } from "zustand";
+export interface UserDetailApi {
+  user: DetailedUser;
+}
 
-import {
-  type CounterStore,
-  createCounterStore,
-  initCounterStore,
-} from "@/stores/counter-store";
-import { Storefront } from "@mui/icons-material";
-
-export type CounterStoreApi = ReturnType<typeof createCounterStore>;
-
-export const CounterStoreContext = createContext<CounterStoreApi | undefined>(
+export const UserDetailContext = createContext<UserDetailApi | undefined>(
   undefined
 );
 
-export interface CounterStoreProviderProps {
+export interface UserDetailProviderProps {
+  /**
+   * User identifier
+   */
+  id: BaseUser["id"];
   children: ReactNode;
 }
 
-export const CounterStoreProvider = ({
+export const UserDetailProvider = ({
+  id,
   children,
-}: CounterStoreProviderProps) => {
-  const storeRef = useRef<CounterStoreApi>(createCounterStore());
+}: UserDetailProviderProps) => {
+  const { data: user, isLoading, error } = useUserDetailsQuery(id);
 
-  if (!storeRef.current) {
-    storeRef.current = createCounterStore(initCounterStore());
+  if (isLoading) {
+    return <UserDetailScreenSkeleton />;
+  }
+
+  if (error) {
+    // trigger error.tsx page
+    throw new Error("Request Faield");
+  }
+
+  if (!user) {
+    // trigger not-found.tsx page
+    throw notFound();
   }
 
   return (
-    <CounterStoreContext.Provider value={storeRef.current}>
+    <UserDetailContext.Provider
+      value={{
+        user: user,
+      }}
+    >
       {children}
-    </CounterStoreContext.Provider>
+    </UserDetailContext.Provider>
   );
 };
 
-export const useCounterStore = <T,>(
-  selector: (store: CounterStore) => T
-): T => {
-  const counterStoreContext = useContext(CounterStoreContext);
-  if (!counterStoreContext) {
-    throw new Error(
-      "useCounterStore must be used withing CounterStoreProvider"
-    );
+/**
+ * Allow to access user object withing user detail page
+ * @returns
+ */
+export const useUserDetails = () => {
+  const value = useContext(UserDetailContext);
+  if (!value) {
+    throw new Error("useUserDetails must be used withing UserDetailProvider");
   }
-
-  return useStore(counterStoreContext, selector);
+  return value.user;
 };

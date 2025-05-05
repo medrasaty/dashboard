@@ -18,12 +18,12 @@ const StyledDialog = styled(MuiDialog)(({ theme }) => ({
       padding: theme.spacing(4),
     },
     // backgroundColor: "rgba(255, 255, 255, 0.8)",
-    backdropFilter: "blur(10px)",
-    WebkitBackdropFilter: "blur(10px)",
+    backdropFilter: "blur(100px)",
+    WebkitBackdropFilter: "blur(100px)",
     boxShadow:
       "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
     ...theme.applyStyles?.("dark", {
-      backgroundColor: "rgba(8, 8, 18, 0.5)",
+      backgroundColor: "rgba(8, 8, 18, 1)",
       boxShadow:
         "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
     }),
@@ -38,7 +38,7 @@ const StyledDialog = styled(MuiDialog)(({ theme }) => ({
       // backgroundRepeat: "no-repeat",
       ...theme.applyStyles?.("dark", {
         backgroundImage:
-          "radial-gradient(at 50% 50%, hsla(220, 100%, 16%, 0.3), hsla(220, 30%, 5%, 0.3))",
+          "radial-gradient(at 50% 100%, hsla(220, 100%, 16%, 0.3), hsla(220, 30%, 5%, 0.3))",
       }),
     },
   },

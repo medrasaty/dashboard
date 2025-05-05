@@ -6,8 +6,10 @@ export enum GenderEnum {
 }
 
 export const UserTypeEnum = {
-  student: "student",
-  teacher: "teacher",
+  student: "STUDENT",
+  teacher: "TEACHER",
+  admin: "ADMIN",
+  system: "SYSTEM",
 } as const;
 
 export const AddNewUserFormSchema = z.object({
@@ -67,3 +69,13 @@ export const EmailSchema = UpdateUserFormSchema.pick({
 });
 
 export type EmailSchemaType = z.infer<typeof EmailSchema>;
+
+export const StudentMoreSchema = z.object({
+  grade: z.number().min(1).max(12),
+});
+
+export const TeacherMoreSchema = z.object({
+  // FIXME: grades are list of numbers.
+  grades: z.number(),
+  subjects: z.number(),
+});

@@ -2,8 +2,11 @@ import { useAuthClient } from "@features/auth/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AddNewUserFormType, UpdateUserFormType } from "./schema";
 import { UsersKeys } from "./keys";
-import { User } from "./types";
+import { StudentMoreType, User } from "./types";
+import { createUser, updateStudentMore, updateUser } from "./requests";
+import { toast } from "@/lib/toast";
 import { BaseUser } from "../auth/types";
+import { useUserDetails } from "./providers";
 
 export default function useAddNewUserMutation() {
   const client = useAuthClient();
@@ -12,18 +15,9 @@ export default function useAddNewUserMutation() {
   return useMutation({
     mutationKey: ["add_user"],
 
-    mutationFn: async (data: AddNewUserFormType): Promise<User> => {
-      // create either student or teacher based on the type
-      const res = await client.request({
-        method: "post",
-        url: data.type === "teacher" ? "/teachers/" : "/students/",
-        data,
-      });
-
-      return res.data;
-    },
-
+    mutationFn: async (data: AddNewUserFormType) => createUser(client, data),
     onSuccess: (data) => {
+      toast.success("user created successfully");
       qc.setQueriesData(
         { queryKey: UsersKeys.all },
         (old: User[] | undefined) => {
@@ -32,33 +26,33 @@ export default function useAddNewUserMutation() {
         }
       );
     },
+    onError: () => {
+      toast.error("failed creating user!");
+    },
     onSettled: () => {
       qc.invalidateQueries({ queryKey: UsersKeys.all });
     },
   });
 }
 
+/**
+ *
+ * @returns
+ */
 export function useUpdateUserMutation() {
   const client = useAuthClient();
   const qc = useQueryClient();
 
-  const mutationFn = async (
-    data: Partial<UpdateUserFormType>
-  ): Promise<BaseUser> => {
-    const res = await client.request({
-      // partial update
-      method: "patch",
-      url: `/users/${data.id}/`,
-      data,
-    });
+  const mutationFn = async (data: Partial<UpdateUserFormType>) =>
+    updateUser(client, data);
 
-    return res.data;
-  };
   return useMutation({
+    // FIXME: replace key with standard UsersKeys.Mutate.Update(id)
     mutationKey: ["update_user"],
     mutationFn,
     onSuccess: (data) => {
       // use toast
+      toast.success("user updated successfully");
       qc.setQueryData(UsersKeys.Details(data.id), (old: User | undefined) => {
         // merge info
         return {
@@ -67,8 +61,55 @@ export function useUpdateUserMutation() {
         };
       });
     },
-    onSettled: (data) => {
+    onError: (_error) => {
+      toast.error("failed updating user");
+    },
+    onSettled: (_data) => {
       qc.invalidateQueries({ queryKey: UsersKeys.all });
+    },
+  });
+}
+
+/**
+ * Use it to update student more related objects.
+ * just provide studentmore data without explicitly setting "studentmore": data,
+ *  just pass data to mutate => mutate(data)
+ * @returns
+ */
+export function useUpdateStudentMoreMutation(studentId: BaseUser["id"]) {
+  const qc = useQueryClient();
+
+  const mutationFn = async (data: Partial<StudentMoreType>) =>
+    await updateStudentMore(studentId, data);
+
+  return useMutation({
+    mutationKey: UsersKeys.Mutate.Update(studentId),
+    mutationFn,
+    /**
+     * Update studentmore section in student detail object
+     * @param data
+     */
+    onSuccess: (data) => {
+      toast.success("updated studentmore successfully");
+      console.log({
+        id: data.id,
+        type: typeof data.id,
+        value: UsersKeys.Details(data.id),
+      });
+      qc.setQueryData(UsersKeys.Details(data.id), (old: User) => {
+        console.log(data);
+        return {
+          ...old,
+          more: data.more,
+        };
+      });
+    },
+    onError: (_error) => {
+      toast.error("failed updating user");
+    },
+    onSettled: (_data) => {
+      console.log({ key: UsersKeys.Details(studentId) });
+      qc.invalidateQueries({ queryKey: UsersKeys.Details(studentId) });
     },
   });
 }

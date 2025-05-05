@@ -6,7 +6,6 @@ import {
   Stack,
   Avatar,
   Chip,
-  Button,
   Divider,
   Card,
   CardContent,
@@ -28,12 +27,13 @@ import { DetailedUser } from "../types";
 import useVisibleState from "@/hooks/useVisibleState";
 import { StyledDialog, StyledDialogTitle } from "@/components/styled/Dialog";
 import EditFullNameForm from "./forms/EditFullName";
+import { UpdateUserDialog } from "./UserDialog";
+import { useUserDetails } from "../providers";
 
-export type UserActionCardProps = {
-  profile: DetailedUser;
-};
+export type UserActionCardProps = {};
 
-export default function UserActionCard({ profile }: UserActionCardProps) {
+export default function UserActionCard({}: UserActionCardProps) {
+  const profile = useUserDetails();
   return (
     <Card elevation={2} sx={{ borderRadius: 2, height: "100%" }}>
       <CardContent>
@@ -55,52 +55,26 @@ export default function UserActionCard({ profile }: UserActionCardProps) {
           />
           <FullName profile={profile} />
           <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-            <Chip label={profile.type} color="primary" size="small" />
+            <Chip
+              label={profile.type}
+              color={profile.type === "TEACHER" ? "success" : "primary"}
+              size="small"
+            />
             {/* Verified chip here */}
           </Box>
           <Divider sx={{ width: "100%", my: 2 }} />
-          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-            Account Status
-          </Typography>
-          <Box sx={{ mb: 2, width: "100%" }}>
-            <Chip
-              label={profile.status === "active" ? "Active" : "Inactive"}
-              color={profile.status === "active" ? "success" : "error"}
-              size="small"
-            />
-          </Box>
-          <Divider sx={{ width: "100%", my: 2 }} />
           <Stack spacing={2} width="100%">
-            <Button
-              variant="outlined"
-              color="error"
-              startIcon={<BlockIcon />}
-              fullWidth
-            >
-              Suspend Account
-            </Button>
-            <Button
-              variant="outlined"
-              color="warning"
-              startIcon={<LockIcon />}
-              fullWidth
-            >
-              Reset Password
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              startIcon={<DeleteIcon />}
-              fullWidth
-            >
-              Delete Account
-            </Button>
+            <EditAccount user={profile} />
           </Stack>
         </Box>
       </CardContent>
     </Card>
   );
 }
+
+const EditAccount = ({ user }: { user: DetailedUser }) => {
+  return <UpdateUserDialog user={user} />;
+};
 
 /**
  * Display full name with the ability to update it

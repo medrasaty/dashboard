@@ -5,5 +5,5 @@ export interface BasePaginatedResponse {
 }
 
 export interface PagePaginatedResponse<T> extends BasePaginatedResponse {
-  result: T[];
+  results: T[];
 }

@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
  * Root layout for all protected routes, it wrapps the entire app with AuthSessionProvider that exposes an authenticated user
  * @param param0 children {react node}
  */
-export default function ProtectedLayout({
+export default function ProtectedRootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -14,7 +14,7 @@ export default function ProtectedLayout({
   return (
     <AuthSessionProvider>
       {children}
-      <ToastContainer hideProgressBar theme="light" position="bottom-right" />
+      <ToastContainer hideProgressBar theme="dark" position="bottom-right" />
     </AuthSessionProvider>
   );
 }

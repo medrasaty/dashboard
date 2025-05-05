@@ -4,18 +4,16 @@ import { useState } from "react";
 import {
   Button,
   DialogContent,
-  DialogTitle,
   IconButton,
-  styled,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-import AddNewUserForm from "./AddNewUserForm";
 import {
   StyledDialog as Dialog,
   StyledDialogTitle,
 } from "@/components/styled/Dialog";
+import { CreateUserForm } from "./forms/CreateUserForm";
 
 export default function AddUserDialog() {
   const [open, setOpen] = useState(false);
@@ -62,7 +60,7 @@ export default function AddUserDialog() {
           </IconButton>
         </StyledDialogTitle>
         <DialogContent sx={{ padding: 0 }}>
-          <AddNewUserForm onClose={handleClose} />
+          <CreateUserForm onSuccess={handleClose} />
         </DialogContent>
       </Dialog>
     </>
