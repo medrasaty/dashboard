@@ -1,6 +1,5 @@
 "use client";
 import {
-  Alert,
   Box,
   Button,
   FormControl,
@@ -33,6 +32,7 @@ export interface UserFormProps {
 }
 
 /**
+ * Form to create or update user, controlled by 'mode' attribute.
  * @returns Base user form with abilit to create or update user
  */
 export default function UserForm({

@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid2,
-  TextField,
+  Typography,
 } from "@mui/material";
 import { useUserDetails } from "../providers";
 import { StudentMoreType, TeacherMoreType } from "../types";
@@ -13,6 +13,8 @@ import InfoItem, { InfoItemProps } from "@/components/InfoItem";
 import useOpen from "@/hooks/useOpen";
 import { StyledDialog, StyledDialogTitle } from "@/components/styled/Dialog";
 import UpdateStudentMoreForm from "./forms/UpdateStudentMoreForm";
+import { useMemo } from "react";
+import UpdateTeacherMoreForm from "./forms/UpdateTeacherMoreForm";
 
 /**
  * Dynamic card based on user type
@@ -20,14 +22,15 @@ import UpdateStudentMoreForm from "./forms/UpdateStudentMoreForm";
 export default function UserMoreInfoCard() {
   const user = useUserDetails();
 
-  return user.type === "STUDENT" ? (
-    <StudentMoreCard studentmore={user.more} />
-  ) : (
-    <TeacherMoreCard teachermore={user.more} />
+  const MoreCard = useMemo(
+    () => (user.type == "STUDENT" ? StudentMoreCard : TeacherMoreCard),
+    [user.type]
   );
+
+  return <MoreCard more={user.more} />;
 }
 
-function StudentMoreCard({ studentmore }: { studentmore: StudentMoreType }) {
+function StudentMoreCard({ more: studentmore }: { more: StudentMoreType }) {
   const { open, show: ShowEditDialog, hide } = useOpen();
 
   const infoItems = [
@@ -59,7 +62,7 @@ function StudentMoreCard({ studentmore }: { studentmore: StudentMoreType }) {
   );
 }
 
-function TeacherMoreCard({ teachermore }: { teachermore: TeacherMoreType }) {
+function TeacherMoreCard({ more: teachermore }: { more: TeacherMoreType }) {
   const { open, show, hide } = useOpen();
   const infoItems = [
     {
@@ -83,14 +86,10 @@ function TeacherMoreCard({ teachermore }: { teachermore: TeacherMoreType }) {
           ))}
         </Grid2>
       </InfoCard>
-      <Dialog open={open} onClose={hide}>
-        <DialogTitle>Edit TeacherMore</DialogTitle>
-        <DialogContent>
-          <TextField />
-          <TextField />
-          <TextField />
-        </DialogContent>
-      </Dialog>
+      <StyledDialog open={open} onClose={hide}>
+        <DialogTitle>Edit more</DialogTitle>
+        <UpdateTeacherMoreForm onClose={hide} />
+      </StyledDialog>
     </>
   );
 }

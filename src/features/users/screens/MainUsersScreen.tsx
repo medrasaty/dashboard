@@ -3,7 +3,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import UsersList from "../components/StudentsList";
 import AddUserDialog from "../components/AddNewUserDialog";
 
-export function MainUsersScreen() {
+export default function MainUsersScreen() {
   return (
     <Stack>
       <Box mt={6}>

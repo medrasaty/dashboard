@@ -1,7 +1,7 @@
 import { auth } from "@features/auth/auth";
 import * as routes from "./lib/routes";
 
-// @ts-ignore
+// @ts-expect-error
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;

@@ -14,6 +14,7 @@ import {
   StyledDialogTitle,
 } from "@/components/styled/Dialog";
 import { CreateUserForm } from "./forms/CreateUserForm";
+// import { Button } from "@/components/ui/button";
 
 export default function AddUserDialog() {
   const [open, setOpen] = useState(false);
@@ -30,12 +31,11 @@ export default function AddUserDialog() {
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+      <Button variant={"contained"} color="primary" onClick={handleClickOpen}>
         Add New User
       </Button>
       <Dialog
         open={open}
-        onClose={handleClose}
         fullScreen={fullScreen}
         maxWidth="md"
         fullWidth

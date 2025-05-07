@@ -76,6 +76,6 @@ export const StudentMoreSchema = z.object({
 
 export const TeacherMoreSchema = z.object({
   // FIXME: grades are list of numbers.
-  grades: z.number(),
-  subjects: z.number(),
+  grades: z.array(z.number().min(1).max(12)).default([]),
+  subjects: z.array(z.number().min(1).max(12)).default([]),
 });

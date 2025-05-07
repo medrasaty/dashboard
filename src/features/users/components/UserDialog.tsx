@@ -8,6 +8,7 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
+import { Button as Btn } from "@/components/ui/button";
 import { Close as CloseIcon } from "@mui/icons-material";
 import {
   StyledDialog as Dialog,
@@ -84,9 +85,9 @@ export function UpdateUserDialog({ user }: { user: DetailedUser }) {
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+      <Btn variant="secondary" onClick={handleClickOpen}>
         Update user
-      </Button>
+      </Btn>
       <Dialog
         open={open}
         onClose={handleClose}
