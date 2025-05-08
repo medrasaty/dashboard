@@ -1,7 +1,6 @@
 import { Controller, useForm } from "react-hook-form";
-import { TeacherMoreType } from "../../types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TeacherMoreSchema } from "../../schema";
+import { z } from "zod";
 import {
   Box,
   Button,
@@ -11,117 +10,139 @@ import {
   Select,
   Stack,
   Typography,
+  CircularProgress,
 } from "@mui/material";
+import { TeacherMoreSchema } from "../../schema";
+import { useUpdateTeacherMoreMutation } from "../../mutations";
 import { useUserDetails } from "../../providers";
+import { useSubjects } from "@features/users/queries";
 
-const GRADES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+// Constants
+const GRADES = Array.from({ length: 12 }, (_, i) => i + 1);
 
-export default function UpdateTeacherMoreForm({
+// Type derived from Zod schema
+type FormData = z.infer<typeof TeacherMoreSchema>;
+
+export function UpdateTeacherMoreForm2({
   onClose,
 }: {
+  // Add any props if needed
   onClose: () => void;
 }) {
+  const user = useUserDetails();
+
+  // fetch subjects list
+  const { data: subjects = [], isLoading: isSubjectsLoading } = useSubjects();
+
   const {
-    handleSubmit,
     control,
+    handleSubmit,
     formState: { errors },
-  } = useForm<TeacherMoreType>({
+  } = useForm<FormData>({
     resolver: zodResolver(TeacherMoreSchema),
     defaultValues: {
-      // You must explicitly pass an empty array for multiple select.
-      grades: [],
-      subjecs: [],
+      grades: user.more.grades,
+      subjects: user.more.subjects,
     },
   });
 
-  console.log(errors);
+  const { mutate: update, isPending } = useUpdateTeacherMoreMutation(user.id);
 
-  const user = useUserDetails();
-
-  const isPending = false;
-
-  const onSubmit = (data: TeacherMoreType) => {
-    // update than close
-    console.log(data);
-    onClose();
+  const onSubmit = (data: FormData) => {
+    update(data, {
+      onSuccess: () => {
+        // close modal
+        onClose();
+      },
+    });
   };
 
   return (
-    <FormControl fullWidth component={"form"} onSubmit={handleSubmit(onSubmit)}>
+    <Box component="form" mt={1} onSubmit={handleSubmit(onSubmit)} noValidate>
       <Stack spacing={3}>
-        <Stack direction={"row"} gap={2}>
-          <FormControl fullWidth>
+        <Stack direction="row" gap={2}>
+          {/* Grades Select */}
+          <FormControl fullWidth error={!!errors.grades}>
             <InputLabel id="grades-label">Teacher Grades</InputLabel>
             <Controller
               name="grades"
               control={control}
-              disabled={isPending}
-              render={({ field }) => {
-                return (
-                  <Select
-                    {...field}
-                    multiple
-                    value={field.value}
-                    labelId="grades-label"
-                    label="Teacher Grades"
-                    error={!!errors.grades}
-                  >
-                    {GRADES.map((grade) => {
-                      return (
-                        <MenuItem key={grade} value={grade}>
-                          {grade}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                );
-              }}
-            />
-            {!!errors?.grades && (
-              <Typography>{errors.grades.message}</Typography>
-            )}
-          </FormControl>
-          <FormControl fullWidth>
-            <InputLabel id="subjects-label">Subjects</InputLabel>
-            <Controller
-              name="subjecs"
-              control={control}
-              disabled={isPending}
               render={({ field }) => (
                 <Select
                   {...field}
-                  value={field.value}
                   multiple
-                  labelId="subjecs-label"
-                  label="Subjects"
-                  error={!!errors.subjects}
+                  labelId="grades-label"
+                  disabled={isPending}
+                  label="Teacher Grades"
                 >
-                  {GRADES.map((grade) => {
-                    return (
-                      <MenuItem key={grade} value={grade}>
-                        {grade}
-                      </MenuItem>
-                    );
-                  })}
+                  {GRADES.map((grade) => (
+                    <MenuItem key={grade} value={grade}>
+                      {grade}
+                    </MenuItem>
+                  ))}
                 </Select>
               )}
             />
-            {!!errors?.subjecs && (
-              <Typography>{errors.subjects.message}</Typography>
+            {errors.grades && (
+              <Typography color="error">{errors.grades.message}</Typography>
+            )}
+          </FormControl>
+
+          {/* Subjects Select */}
+          <FormControl fullWidth error={!!errors.subjects}>
+            <InputLabel id="subjects-label">Subjects</InputLabel>
+            <Controller
+              name="subjects"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  multiple
+                  labelId="subjects-label"
+                  disabled={isPending}
+                  renderValue={(selected) =>
+                    isSubjectsLoading ? (
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <CircularProgress size={20} />
+                        <Typography variant="body2" ml={1}>
+                          Loading subjects...
+                        </Typography>
+                      </Box>
+                    ) : (
+                      (selected as string[]).join(', ')
+                    )
+                  }
+                  label="Subjects"
+                >
+                  {isSubjectsLoading ? (
+                    <MenuItem disabled>Loading...</MenuItem>
+                  ) : (
+                    subjects.map((subject) => (
+                      <MenuItem key={subject.id} value={subject.id}>
+                        {subject.name}
+                      </MenuItem>
+                    ))
+                  )}
+                </Select>
+              )}
+            />
+            {errors.subjects && (
+              <Typography color="error">{errors.subjects.message}</Typography>
             )}
           </FormControl>
         </Stack>
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
+
+        <Box display="flex" justifyContent="center">
           <Button
             loading={isPending}
+            disabled={isPending}
             variant="contained"
-            color="primary"
             type="submit"
           >
             Submit
           </Button>
         </Box>
       </Stack>
-    </FormControl>
+    </Box>
   );
 }

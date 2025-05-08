@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getUserInSchool, getUsersInSchool } from "./requests";
 import { BaseUser } from "../auth/types";
 import { UsersKeys } from "./keys";
+import { getSubjects } from "./requests";
 import { useAuthClient, useCurrentUser } from "../auth/hooks";
 
 /**
@@ -24,5 +25,15 @@ export function useUserDetailsQuery(userId: BaseUser["id"]) {
   return useQuery({
     queryKey: UsersKeys.Details(userId),
     queryFn: async () => getUserInSchool(client, userId, user.school),
+  });
+}
+
+/**
+ * Hook to fetch subjects list
+ */
+export function useSubjects() {
+  return useQuery({
+    queryKey: UsersKeys.subjects,
+    queryFn: getSubjects,
   });
 }

@@ -1,6 +1,11 @@
 import { BaseUser } from "../auth/types";
 import { AxiosInstance } from "axios";
-import { DetailedUser, Student, StudentMoreType } from "./types";
+import {
+  DetailedUser,
+  Student,
+  StudentMoreType,
+  TeacherMoreType,
+} from "./types";
 import { User } from "./types";
 import { AddNewUserFormType, UpdateUserFormType, UserTypeEnum } from "./schema";
 import { Client } from "@/lib/network";
@@ -114,4 +119,38 @@ export async function updateStudentMore(
   });
 
   return res.data;
+}
+
+export async function updateTeacherMore(
+  teacherId: BaseUser["id"],
+  data: Partial<TeacherMoreType>
+) {
+  const client = await Client();
+
+  const res = await client.request<Student>({
+    method: "patch",
+    url: `/teachers/${teacherId}/`,
+    data: {
+      teachermore: data,
+    },
+  });
+
+  return res.data;
+}
+
+/**
+ * Fetch all subjects from the server
+ */
+export async function getSubjects() {
+  const client = await Client();
+  const res = await client.request<{
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: Array<{ catagory: string; id: string; name: string }>;
+  }>({
+    method: "get",
+    url: "/subjects/",
+  });
+  return res.data.results;
 }

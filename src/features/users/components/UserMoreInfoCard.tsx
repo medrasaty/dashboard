@@ -14,7 +14,7 @@ import useOpen from "@/hooks/useOpen";
 import { StyledDialog, StyledDialogTitle } from "@/components/styled/Dialog";
 import UpdateStudentMoreForm from "./forms/UpdateStudentMoreForm";
 import { useMemo } from "react";
-import UpdateTeacherMoreForm from "./forms/UpdateTeacherMoreForm";
+import { UpdateTeacherMoreForm2 } from "./forms/UpdateTeacherMoreForm";
 
 /**
  * Dynamic card based on user type
@@ -64,16 +64,19 @@ function StudentMoreCard({ more: studentmore }: { more: StudentMoreType }) {
 
 function TeacherMoreCard({ more: teachermore }: { more: TeacherMoreType }) {
   const { open, show, hide } = useOpen();
-  const infoItems = [
-    {
-      label: "Grades",
-      value: teachermore.grades?.toString(),
-    },
-    {
-      label: "Subjects",
-      value: teachermore.subjects?.toString(),
-    },
-  ] satisfies InfoItemProps[];
+  const infoItems: InfoItemProps[] = useMemo(
+    () => [
+      {
+        label: "Grades",
+        value: teachermore.grades?.toString(),
+      },
+      {
+        label: "Subjects",
+        value: teachermore.subjects?.toString(),
+      },
+    ],
+    [teachermore]
+  );
 
   return (
     <>
@@ -88,7 +91,9 @@ function TeacherMoreCard({ more: teachermore }: { more: TeacherMoreType }) {
       </InfoCard>
       <StyledDialog open={open} onClose={hide}>
         <DialogTitle>Edit more</DialogTitle>
-        <UpdateTeacherMoreForm onClose={hide} />
+        <DialogContent>
+          <UpdateTeacherMoreForm2 onClose={hide} />
+        </DialogContent>
       </StyledDialog>
     </>
   );

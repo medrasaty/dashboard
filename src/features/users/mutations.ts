@@ -3,7 +3,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AddNewUserFormType, UpdateUserFormType } from "./schema";
 import { UsersKeys } from "./keys";
 import { StudentMoreType, User } from "./types";
-import { createUser, updateStudentMore, updateUser } from "./requests";
+import {
+  createUser,
+  updateStudentMore,
+  updateTeacherMore,
+  updateUser,
+} from "./requests";
 import { toast } from "@/lib/toast";
 import { BaseUser } from "../auth/types";
 import { useUserDetails } from "./providers";
@@ -110,6 +115,33 @@ export function useUpdateStudentMoreMutation(studentId: BaseUser["id"]) {
     onSettled: (_data) => {
       console.log({ key: UsersKeys.Details(studentId) });
       qc.invalidateQueries({ queryKey: UsersKeys.Details(studentId) });
+    },
+  });
+}
+
+export function useUpdateTeacherMoreMutation(teacherId: BaseUser["id"]) {
+  const qc = useQueryClient();
+
+  const mutationFn = async (data: Partial<StudentMoreType>) =>
+    await updateTeacherMore(teacherId, data);
+
+  return useMutation({
+    mutationKey: UsersKeys.Mutate.Update(teacherId),
+    mutationFn,
+    onSuccess: (data) => {
+      toast.success("updated more successfully");
+      qc.setQueryData(UsersKeys.Details(data.id), (old: User) => {
+        return {
+          ...old,
+          more: data.more,
+        };
+      });
+    },
+    onError: (_error) => {
+      toast.error("failed updating user");
+    },
+    onSettled: (_data) => {
+      qc.invalidateQueries({ queryKey: UsersKeys.Details(teacherId) });
     },
   });
 }
