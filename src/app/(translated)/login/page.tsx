@@ -1,10 +1,9 @@
 import { GalleryVerticalEnd } from "lucide-react";
-
-import { LoginForm } from "@/components/login-form";
-import SignInScreen from "@/features/auth/screens/SignInScreen";
+import { LoginForm, LoginFormSkeleton } from "@/components/login-form";
+import Image from "next/image";
+import { Suspense } from "react";
 
 export default function LoginPage() {
-  return <SignInScreen />;
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
@@ -14,20 +13,23 @@ export default function LoginPage() {
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
               <GalleryVerticalEnd className="size-4" />
             </div>
-            Acme Inc.
+            Medrasaty
           </a>
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <LoginForm />
+            <Suspense fallback={<LoginFormSkeleton />}>
+              <LoginForm />
+            </Suspense>
           </div>
         </div>
       </div>
-      <div className="relative hidden bg-primary lg:block">
-        <img
-          src="/placeholder.svg"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+      <div className="relative hidden bg-muted lg:block">
+        <Image
+          src="/medrasaty_icon.png"
+          alt="Medrasaty Logo"
+          fill
+          className="object-cover object-center"
         />
       </div>
     </div>

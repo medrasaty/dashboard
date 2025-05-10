@@ -6,9 +6,11 @@ import IconButton, { IconButtonOwnProps } from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useColorScheme } from '@mui/material/styles';
+import { useTheme } from 'next-themes';
 
 export default function ColorModeIconDropdown(props: IconButtonOwnProps) {
   const { mode, systemMode, setMode } = useColorScheme();
+  const { setTheme } = useTheme();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -19,6 +21,8 @@ export default function ColorModeIconDropdown(props: IconButtonOwnProps) {
   };
   const handleMode = (targetMode: 'system' | 'light' | 'dark') => () => {
     setMode(targetMode);
+    // Combine MUI and Next.js switch themes
+    setTheme(targetMode);
     handleClose();
   };
   if (!mode) {

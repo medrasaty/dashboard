@@ -7,15 +7,8 @@ import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import AnalyticsRoundedIcon from "@mui/icons-material/AnalyticsRounded";
-import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
-import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
-import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
 import Link from "next/link";
-import { Menu } from "@mui/material";
 import { usePathname } from "next/navigation";
-import { PathnameContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 
 type MenuItem = {
   text: string;
@@ -51,11 +44,7 @@ const mainListItems: MenuItem[] = [
   { text: "users", icon: <AnalyticsRoundedIcon />, path: "/dashboard/users" },
 ];
 
-const secondaryListItems: MenuItem[] = [
-  { text: "Settings", icon: <SettingsRoundedIcon />, path: "/settings" },
-  { text: "About", icon: <InfoRoundedIcon />, path: "/about" },
-  { text: "Feedback", icon: <HelpRoundedIcon />, path: "/feedback" },
-];
+const secondaryListItems: MenuItem[] = [];
 
 export default function MenuContent() {
   return (

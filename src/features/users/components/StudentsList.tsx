@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { Chip, Paper, TextField, Typography } from "@mui/material";
+import { Chip, Paper } from "@mui/material";
 import Link from "next/link";
 import { useSchoolUsers } from "../queries";
 import SearchFieldNav from "@/features/search/components/SearchFieldNav";
@@ -15,16 +15,7 @@ const columns: GridColDef[] = [
     minWidth: 200,
     renderCell: (props: GridRenderCellParams) => {
       const userId = props.row["id"];
-      return (
-        <Link
-          style={{
-            color: "lightblue",
-          }}
-          href={`/dashboard/users/${userId}`}
-        >
-          {props.value}
-        </Link>
-      );
+      return <Link href={`/dashboard/users/${userId}`}>{props.value}</Link>;
     },
   },
   {

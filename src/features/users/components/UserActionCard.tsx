@@ -13,15 +13,8 @@ import {
   IconButton,
   DialogContent,
   Tooltip,
-  Grid2 as Grid,
 } from "@mui/material";
-import {
-  Delete as DeleteIcon,
-  Block as BlockIcon,
-  Edit as EditIcon,
-  Lock as LockIcon,
-  Close as CloseIcon,
-} from "@mui/icons-material";
+import { Edit as EditIcon, Close as CloseIcon } from "@mui/icons-material";
 
 import { DetailedUser } from "../types";
 import useVisibleState from "@/hooks/useVisibleState";

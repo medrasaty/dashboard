@@ -4,6 +4,7 @@ import AppTheme from "@/shared-theme/AppTheme";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { QueryProvider } from "@/lib/providers";
+import { ThemeProvider as ShadcnThemeProvider } from "@/shared-theme/shadcn-theme-provider";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -26,14 +27,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <SessionProvider>
-        <AppTheme>
-          <body className={`antialiased`}>
-            {/* QueryProvider should be inside html body for 'dev-tools' to work */}
-            <QueryProvider>{children}</QueryProvider>
-          </body>
-        </AppTheme>
+        <ShadcnThemeProvider defaultTheme="dark" attribute="class" enableSystem>
+          <AppTheme>
+            <body className={`antialiased`}>
+              {/* QueryProvider should be inside html body for 'dev-tools' to work */}
+              <QueryProvider>{children}</QueryProvider>
+            </body>
+          </AppTheme>
+        </ShadcnThemeProvider>
       </SessionProvider>
     </html>
   );
