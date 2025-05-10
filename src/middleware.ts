@@ -1,16 +1,17 @@
 import { auth } from "@features/auth/auth";
 import * as routes from "./lib/routes";
+import { i18nRouter } from "next-i18n-router";
+import { NextRequest, NextResponse } from "next/server";
+import i18n from "@/i18n";
+
 
 // @ts-expect-error
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
-  const currentRoute = req.nextUrl.pathname;
-
+  const currentRoute = nextUrl.pathname;
   const isApiAuthRoute = currentRoute.includes(routes.apiAuthPrefix);
-
   const isPublicRoute = routes.publicRoutes.includes(currentRoute);
-
   const isAuthRoute = routes.authRoutes.includes(currentRoute);
 
   if (isApiAuthRoute) {
@@ -19,7 +20,9 @@ export default auth((req) => {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      return Response.redirect(new URL(routes.DEFAULT_LOGIN_REDIRECT, nextUrl));
+      return Response.redirect(
+        new URL(routes.DEFAULT_LOGIN_REDIRECT, nextUrl)
+      );
     }
     return null;
   }
@@ -28,7 +31,6 @@ export default auth((req) => {
     return Response.redirect(new URL(routes.LOGIN_URL, nextUrl));
   }
 
-  // If code reached this point, user is logged in, allow it to pass.
   return null;
 });
 

@@ -11,6 +11,7 @@ import HighlightedCard from "./HighlightedCard";
 import PageViewsBarChart from "./PageViewsBarChart";
 import SessionsChart from "./SessionsChart";
 import StatCard, { StatCardProps } from "./StatCard";
+import { useTranslation } from "react-i18next";
 
 const data: StatCardProps[] = [
   {
@@ -57,11 +58,14 @@ const data: StatCardProps[] = [
 ];
 
 export default function MainGrid() {
+  const {t} = useTranslation()
   return (
     <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
       {/* cards */}
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Overview
+  <div>
+    <h1>{t("hello")}</h1>
+  </div>
       </Typography>
       <Grid
         container

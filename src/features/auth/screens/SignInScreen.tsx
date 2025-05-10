@@ -20,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert } from "@mui/material";
 import { useSearchParams } from "next/navigation";
 import MuiCard from "@mui/material/Card";
+import { useTranslation } from "react-i18next";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -71,6 +72,8 @@ export default function SignInScreen() {
   } = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
   });
+
+  const {t} = useTranslation();
 
   const params = useSearchParams();
 

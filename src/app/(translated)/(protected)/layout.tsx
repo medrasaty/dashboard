@@ -1,6 +1,9 @@
+'use client'
 import { AuthSessionProvider } from "@/features/auth/contexts";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import "@/i18n";
 
 /**
  * Root layout for all protected routes, it wrapps the entire app with AuthSessionProvider that exposes an authenticated user
