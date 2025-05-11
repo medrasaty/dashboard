@@ -4,7 +4,6 @@ import { i18nRouter } from "next-i18n-router";
 import { NextRequest, NextResponse } from "next/server";
 import i18n from "@/i18n";
 
-
 // @ts-expect-error
 export default auth((req) => {
   const { nextUrl } = req;
@@ -20,9 +19,7 @@ export default auth((req) => {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      return Response.redirect(
-        new URL(routes.DEFAULT_LOGIN_REDIRECT, nextUrl)
-      );
+      return Response.redirect(new URL(routes.DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
     return null;
   }
