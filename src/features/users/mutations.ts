@@ -11,7 +11,6 @@ import {
 } from "./requests";
 import { toast } from "@/lib/toast";
 import { BaseUser } from "../auth/types";
-import { useUserDetails } from "./providers";
 
 export default function useAddNewUserMutation() {
   const client = useAuthClient();
